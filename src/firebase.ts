@@ -8,12 +8,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCmhbmtCTMwQDdS2Tp8kenLzt_8lqitnhc",
-  authDomain: "ghibli-sign-game.firebaseapp.com",
-  projectId: "ghibli-sign-game",
-  storageBucket: "ghibli-sign-game.firebasestorage.app",
-  messagingSenderId: "32824369095",
-  appId: "1:32824369095:web:bc35abe9964c973cf983e2"
+  apiKey: 
+  authDomain: 
+  projectId: 
+  storageBucket:
+  messagingSenderId: 
+  appId: 
 };
 
 // Initialize Firebase
