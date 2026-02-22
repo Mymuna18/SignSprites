@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",           
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.32",
+    "fingerpose": "^0.1.0",
     "firebase": "^12.9.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

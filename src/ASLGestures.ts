@@ -257,26 +257,24 @@ export type GestureResult = { label: string; confidence: number } | null;
 export function checkGesture(landmarks21x3: number[][]): GestureResult {
   if (!Array.isArray(landmarks21x3) || landmarks21x3.length !== 21) return null;
 
-  const estimate = estimator.estimate(landmarks21x3, 7.5);
+  const estimate = estimator.estimate(landmarks21x3, 0);
+  const sorted = [...estimate.gestures].sort((a: any, b: any) => b.score - a.score);
+  console.log("TOP 3:", sorted.slice(0, 3).map((g: any) => `${g.name}:${g.score.toFixed(1)}`));  
   if (!estimate.gestures || estimate.gestures.length === 0) return null;
 
   const gestures = [...estimate.gestures].sort((a: any, b: any) => b.score - a.score);
   const best = gestures[0];
-  const second = gestures[1];
 
-  // Tune these for your demo:
-  const MIN_SCORE = 8.0;
-  const MIN_MARGIN = 0.8;
+  const MIN_SCORE = 4.0;
 
   if (best.score < MIN_SCORE) return null;
-  if (second && best.score - second.score < MIN_MARGIN) return null;
 
   return { label: best.name, confidence: best.score };
 }
 
 // ---- Optional: smoothing for “hold to confirm” ----
 const history: { label: string; confidence: number }[] = [];
-const HISTORY = 15;
+const HISTORY = 8;
 
 export function smoothedGesture(current: GestureResult): GestureResult {
   if (!current) return null;
@@ -297,7 +295,7 @@ export function smoothedGesture(current: GestureResult): GestureResult {
   }
 
   // Require stability across frames
-  if (bestCount < 10) return null;
+  if (bestCount < 4) return null;
 
   const relevant = history.filter((h) => h.label === bestLabel);
   const avg = relevant.reduce((s, x) => s + x.confidence, 0) / relevant.length;

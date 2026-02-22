@@ -1,73 +1,28 @@
-# React + TypeScript + Vite
+# 🌟 Sign Sprites 🌟
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+Inspired by the soot sprites from Spirited Away, players guide a Ghibli-style sprite across the screen, collecting paper stars. Along the way, the sprite encounters obstacles that require the player to sign a specific ASL letter to pass.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-time Tracking:** The game activates the webcam and tracks the player's hand in real-time.
+- **Smart Detection:** It verifies if the player is signing the correct letter.
+- **AI Coaching:** If the player gets stuck or signs the wrong letter, our AI coach provides custom, encouraging feedback on how to adjust their fingers to get it right.
 
-## React Compiler
+## How we built it
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend:** Built with **React**, **TypeScript**, and **Vite** for a component-based UI.
+- **Backend:** Built with **Firebase** for quick user authentication.
+- **Computer Vision:** We implemented **@mediapipe/tasks-vision** to extract 21 precise 3D hand landmarks from the webcam feed.
+- **Machine Learning:** We flattened the MediaPipe coordinate data into a 63-point array and fed it into an **ml5.js** neural network, which we custom-trained using 2,906 images and short videos to recognize overlapping ASL letters.
+- **Generative AI Coach:** We integrated the **Gemini 2.5 Flash API** to dynamically compare the user's incorrect sign with the target sign and generate real-time, context-aware tips to help them improve.
 
-## Expanding the ESLint configuration
+## Challenges we ran into
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Initially, we planned to use the `fingerpose` library for gesture recognition. However, we quickly realized it couldn't reliably handle the complex, overlapping finger positions required for many ASL letters (like the subtle difference between 'U' and 'V'). Mid-hackathon, we successfully pivoted our data pipeline to feed raw MediaPipe coordinate arrays into a custom `ml5.js` model instead.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## How to run it locally
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Clone the repo.
+2. Run `npm install` to grab all the dependencies.
+3. Create a `.env` file in the root directory and add your Gemini API key: `VITE_GEMINI_API_KEY=your_key_here`
+4. Run `npm run dev` and open your browser.
