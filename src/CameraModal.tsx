@@ -99,14 +99,14 @@ export const CameraModal: React.FC<CameraModalProps> = ({
 
     if (attemptsRef.current >= 2 && !geminiTip && !loadingTip) {
       setLoadingTip(true);
-      getASLTip(targetLetter, attemptsRef.current)
+      getASLTip(targetLetter, attemptsRef.current, prediction || undefined)
         .then((tip) => {
           setGeminiTip(tip);
           setLoadingTip(false);
         })
         .catch(() => setLoadingTip(false));
     }
-  }, [targetLetter, geminiTip, loadingTip]);
+  }, [targetLetter, geminiTip, loadingTip, prediction]);
 
   // ---------- Video loop with fingerpose classification ----------
   const handleVideoLoad = () => {

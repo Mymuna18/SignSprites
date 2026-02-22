@@ -1,24 +1,18 @@
 import { useEffect, useState, useRef } from "react";
 import { CameraModal } from "../CameraModal";
 
-// SPRITES
+// ... (Keep your imports the same) ...
 import spriteWalk1 from "../assets/walking1.png";
 import spriteWalk2 from "../assets/walking2.png";
 import spriteJumping from "../assets/jumping.png";
 import spriteLanding from "../assets/landing.png";
-
-// STARS
 import starGreen from "../assets/littleGreenStar.png";
 import starRed from "../assets/littleRedStar.png";
 import starWhite from "../assets/littleWhiteStar.png";
 import starYellow from "../assets/littleYellowStar.png";
-
-// INFO BUTTON + ASL CHART
 import infoButton from "../assets/redi.png";
 import infoButtonHover from "../assets/buttonHover.png";
 import aslChart from "../assets/handSigns.jpg";
-
-// ✅ SCREEN BACKGROUNDS (ADD YOUR IMAGES HERE)
 import screen1Bg from "../assets/forest.png";
 import screen2Bg from "../assets/restaurant_.png";
 
@@ -29,7 +23,13 @@ export default function Game() {
   const [isInfoHovered, setIsInfoHovered] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
 
+  // 1. TRACK ACTIVE SCREEN INDEPENDENTLY
+  const [activeScreen, setActiveScreen] = useState(0);
+
+  // 2. ADJUST FLOOR HEIGHT BASED ON SCREEN
+  const floorY = activeScreen === 0 ? 150 : 60; // Lower floor for restaurant
   const [position, setPosition] = useState({ x: 100, y: 150 });
+
   const [animationState, setAnimationState] = useState<
     "walk" | "prep" | "jump" | "land"
   >("walk");
@@ -52,9 +52,8 @@ export default function Game() {
   const star1Color = starImages[screenIndex % starImages.length];
   const star2Color = starImages[(screenIndex + 1) % starImages.length];
 
-  // ✅ Alternate background every 2 stars
-  const currentScreen = Math.floor(collectedStars / 2) % 2;
-  const backgroundImage = currentScreen === 0 ? screen1Bg : screen2Bg;
+  // 3. USE ACTIVE SCREEN FOR BACKGROUND
+  const backgroundImage = activeScreen === 0 ? screen1Bg : screen2Bg;
 
   const update = () => {
     if (
@@ -84,7 +83,6 @@ export default function Game() {
           newX >= obstacleX1 &&
           position.x < obstacleX1 &&
           collectedStars % 2 === 0;
-
         const atObstacle2 =
           newX >= obstacleX2 &&
           position.x < obstacleX2 &&
@@ -95,31 +93,27 @@ export default function Game() {
           newX = atObstacle1 ? obstacleX1 : obstacleX2;
         }
 
-        if (newX >= window.innerWidth - 100) handleLevelTransition();
+        // TRANSITION ONLY WHEN WALKING OFF SCREEN
+        if (newX >= window.innerWidth - 50) handleLevelTransition();
 
         setPosition((prev) => ({ ...prev, x: newX }));
       }
     } else {
       setIsWalking(false);
     }
-
     requestRef.current = requestAnimationFrame(update);
   };
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(update);
-
     const down = (e: KeyboardEvent) => {
       keysPressed.current[e.key] = true;
     };
-
     const up = (e: KeyboardEvent) => {
       delete keysPressed.current[e.key];
     };
-
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
-
     return () => {
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
@@ -132,6 +126,7 @@ export default function Game() {
     isLevelFading,
     isFinished,
     collectedStars,
+    activeScreen,
   ]);
 
   useEffect(() => {
@@ -139,12 +134,10 @@ export default function Game() {
       setWalkFrame(0);
       return;
     }
-
     const interval = setInterval(
       () => setWalkFrame((prev) => (prev === 0 ? 1 : 0)),
       120,
     );
-
     return () => clearInterval(interval);
   }, [isWalking, animationState]);
 
@@ -154,15 +147,14 @@ export default function Game() {
 
     setTimeout(() => {
       setAnimationState("jump");
-
-      setPosition((prev) => ({ x: prev.x + 100, y: prev.y + 220 }));
+      // Jump height relative to current floor
+      setPosition((prev) => ({ x: prev.x + 100, y: floorY + 220 }));
 
       setTimeout(() => {
-        setPosition((prev) => ({ x: prev.x + 80, y: 150 }));
+        setPosition((prev) => ({ x: prev.x + 80, y: floorY }));
 
         const nextCount = collectedStars + 1;
         setCollectedStars(nextCount);
-
         if (nextCount >= alphabet.length) setIsFinished(true);
 
         setTimeout(() => {
@@ -176,7 +168,14 @@ export default function Game() {
   const handleLevelTransition = () => {
     setIsLevelFading(true);
     setTimeout(() => {
-      setPosition({ x: -100, y: 150 });
+      // Toggle active screen (0 or 1)
+      const nextScreen = activeScreen === 0 ? 1 : 0;
+      setActiveScreen(nextScreen);
+
+      // Set new floor immediately for the next screen
+      const nextFloorY = nextScreen === 0 ? 150 : 60;
+      setPosition({ x: -80, y: nextFloorY });
+
       setIsLevelFading(false);
     }, 600);
   };
@@ -230,14 +229,14 @@ export default function Game() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* PROGRESS */}
+      {/* UI Elements (Keep same) */}
       <div
         style={{
           position: "absolute",
           top: 20,
           left: 20,
           zIndex: 10,
-          backgroundColor: "#d4f8d4", // light green
+          backgroundColor: "#d4f8d4",
           padding: "12px 18px",
           borderRadius: "20px",
           fontWeight: "bold",
@@ -248,7 +247,7 @@ export default function Game() {
       >
         ⭐ Letter {currentLetter} ({collectedStars}/26)
       </div>
-      {/* INFO BUTTON */}
+
       <img
         src={isInfoHovered ? infoButtonHover : infoButton}
         alt="info"
@@ -265,7 +264,6 @@ export default function Game() {
         }}
       />
 
-      {/* ASL POPUP */}
       {showInfo && (
         <div
           style={{
@@ -303,14 +301,14 @@ export default function Game() {
         </div>
       )}
 
-      {/* STARS */}
+      {/* STARS - LOWERED ON RESTAURANT SCREEN */}
       <img
         src={star1Color}
         alt="star1"
         style={{
           position: "absolute",
           left: obstacleX1 + 100,
-          bottom: 350,
+          bottom: activeScreen === 0 ? 350 : 260, // Lower stars for restaurant
           width: "70px",
           zIndex: 5,
           display:
@@ -326,7 +324,7 @@ export default function Game() {
         style={{
           position: "absolute",
           left: obstacleX2 + 100,
-          bottom: 350,
+          bottom: activeScreen === 0 ? 350 : 260, // Lower stars for restaurant
           width: "70px",
           zIndex: 5,
           display: position.x > obstacleX2 + 100 ? "none" : "block",
@@ -344,6 +342,8 @@ export default function Game() {
           width: "110px",
           transform: `scaleX(${direction})`,
           zIndex: 4,
+          transition:
+            animationState === "walk" ? "none" : "bottom 0.4s ease-out", // Smoother jump landing
         }}
       />
 

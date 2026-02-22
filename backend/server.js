@@ -14,15 +14,17 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // ASL tip endpoint — called when player struggles with a letter
 app.post("/api/asl-tip", async (req, res) => {
   try {
-    const { letter, attempts } = req.body;
+    const { letter, attempts, detectedLetter } = req.body;
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-    const prompt = `You are a friendly, encouraging ASL (American Sign Language) tutor inside a magical Ghibli-themed game called SignSprites. A player is trying to sign the letter "${letter}" but has failed ${attempts} times.
+    let prompt = `You are a friendly, encouraging ASL (American Sign Language) tutor inside a magical Ghibli-themed game called SignSprites. A player is trying to sign the letter "${letter}" but has failed ${attempts} times.`;
 
-Give a short, helpful tip (2-3 sentences max) on how to correctly form the ASL sign for the letter "${letter}". Describe the hand shape, finger positions, and palm orientation clearly. Be warm and encouraging like a Ghibli character would be.
+    if (detectedLetter && detectedLetter !== letter) {
+      prompt += ` The camera detects their hand as "${detectedLetter}" instead of "${letter}". Explain specifically what finger positions they need to change to go from "${detectedLetter}" to "${letter}".`;
+    }
 
-Do not use markdown formatting. Keep it conversational and brief.`;
+    prompt += ` Give a short, helpful tip (2-3 sentences max) on how to correctly form the ASL sign for the letter "${letter}". Be specific about which fingers to move and how. Be warm and encouraging like a Ghibli character would be. Do not use markdown formatting.`;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
