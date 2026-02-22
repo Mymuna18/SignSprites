@@ -4,7 +4,6 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import GameMenu from "./pages/GameMenu";
 import Game from "./pages/Game";
-import TrainModel from "./pages/TrainModel";
 
 export default function App() {
   return (
@@ -14,7 +13,6 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/game-menu" element={<GameMenu />} />
       <Route path="/game" element={<Game />} />
-      <Route path="/train" element={<TrainModel />} />
     </Routes>
   );
 }
