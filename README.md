@@ -13,3 +13,23 @@ Inspired by the soot sprites from Spirited Away, players guide a Ghibli-style sp
 - **Backend:** Built with **Firebase** for quick user authentication.
 - **Computer Vision:** We implemented **@mediapipe/tasks-vision** to extract 21 precise 3D hand landmarks from the webcam feed.
 - **Machine Learning:** We flattened the MediaPipe coordinate data into a 63-point array and used the **fingerpose** library to identify static ASL gestures.
+
+- 🧩 Getting Started
+- Clone the repository
+
+git clone https://github.com/<Mymuna18>/SignSprites.git
+cd SignSprites
+
+Install dependencies
+
+npm install
+
+Set up Firebase
+
+Create a Firebase project and enable Authentication
+
+Add your Firebase config to src/firebaseConfig.js
+
+Run the app locally
+
+npm start
