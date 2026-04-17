@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import backgroundImg from "../assets/startingMenu.png";
 import loginBtnImg from "../assets/loginButton.png";
 import loginBtnHoverImg from "../assets/loginButtonHover.png";
-import signupBtnImg from "../assets/signupButton.png";
-import signupBtnHoverImg from "../assets/signupButtonHover.png";
+import signupBtnImg from "../assets/signUpButton.png";
+import signupBtnHoverImg from "../assets/signUpButtonHover.png";
 
 export default function Menu() {
   return (
