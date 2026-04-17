@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import backgroundImg from "../assets/StartingMenu.png";
+import backgroundImg from "../assets/startingMenu.png";
 import loginBtnImg from "../assets/loginButton.png";
 import loginBtnHoverImg from "../assets/loginButtonHover.png";
 import signupBtnImg from "../assets/signupButton.png";
