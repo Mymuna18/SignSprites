@@ -11,7 +11,7 @@ import starRed from "../assets/littleRedStar.png";
 import starWhite from "../assets/littleWhiteStar.png";
 import starYellow from "../assets/littleYellowStar.png";
 import infoButton from "../assets/redi.png";
-import infoButtonHover from "../assets/buttonHover.png";
+import infoButtonHover from "../assets/buttonhover.png";
 import aslChart from "../assets/handSigns.jpg";
 import screen1Bg from "../assets/forest.png";
 import screen2Bg from "../assets/restaurant_.png";
